@@ -58,4 +58,16 @@ logout = async(req:Request , res:Response , next:NextFunction)=>{
   }
 }
 
+getStats =async(req:Request, res:Response, next:NextFunction)=>{
+  try {
+      const {totalUrls , totalUsers}  = await this.userService.getStats()
+    res.status(HttpStatus.OK).json({totalUrls , totalUsers})   
+  } catch (error) {
+    next(error)
+      
+  }
+}
+
+
+
 };

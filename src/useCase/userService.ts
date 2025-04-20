@@ -5,11 +5,13 @@ import { comparePassword, hashPassword } from "../framework/services/passwordSer
 import AppError from "../framework/utils/appError"
 import { IUser } from "../entities/user"
 import { IGenerateOtp } from "../entities/IGenerateOtp"
+import { IUrlRepository } from "../entities/repository/IurlRepository"
 
 
 interface Dependency{
     repository: {
-        userRepository : IUserRepository
+        userRepository : IUserRepository,
+        urlRepository : IUrlRepository
         
     },
     service :{
@@ -24,9 +26,11 @@ interface Dependency{
 export class UserService {
     private userRepository 
     private jwtService
+    private urlRepository
     constructor(dependancy:Dependency){
         this.userRepository = dependancy.repository.userRepository
         this.jwtService = dependancy.service.jwtService
+        this.urlRepository = dependancy.repository.urlRepository
 
     }
 
@@ -73,6 +77,22 @@ export class UserService {
         } catch (error) {
             console.log(error)
             throw error;
+        }
+    }
+
+
+    async getStats(){
+        try {
+            const totalUsers = (await this.userRepository.findAll()).length
+            const totalUrls = (await this.urlRepository.findAll()).length
+            console.log("totalUsers" , totalUsers)
+            console.log("totalUsers" , totalUrls)
+            return {totalUrls , totalUsers}
+        
+            
+        } catch (error) {
+            throw error
+            
         }
     }
 }
